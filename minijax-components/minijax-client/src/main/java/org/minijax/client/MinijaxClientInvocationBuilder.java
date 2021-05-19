@@ -192,9 +192,16 @@ public class MinijaxClientInvocationBuilder implements jakarta.ws.rs.client.Invo
 
     @Override
     public MinijaxClientInvocation build(final String method, final Entity<?> entity) {
+        if (entity != null) {
+            final MediaType mediaType = entity.getMediaType();
+            if (mediaType != null) {
+                httpRequest.header(HttpHeaders.CONTENT_TYPE, mediaType.toString());
+            }
+        }
+
         final InputStream inputStream;
         try {
-            inputStream = EntityUtils.writeEntity(entity, null);
+            inputStream = EntityUtils.writeEntity(entity, client.getProviders());
         } catch (final IOException ex) {
             throw new MinijaxException("Error converting entity to input stream: " + ex.getMessage(), ex);
         }

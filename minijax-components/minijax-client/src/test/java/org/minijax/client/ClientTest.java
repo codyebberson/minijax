@@ -69,47 +69,47 @@ class ClientTest {
 
     @Test
     void testProperty() {
-        assertThrows(UnsupportedOperationException.class, () -> client.property("name", "value"));
+        assertNotNull(client.property("name", "value"));
     }
 
     @Test
     void testRegister1() {
-        assertThrows(UnsupportedOperationException.class, () -> client.register(Object.class));
+        assertNotNull(client.register(Object.class));
     }
 
     @Test
     void testRegister2() {
-        assertThrows(UnsupportedOperationException.class, () -> client.register(Object.class, 0));
+        assertNotNull(client.register(Object.class, 0));
     }
 
     @Test
     void testRegister3() {
-        assertThrows(UnsupportedOperationException.class, () -> client.register(Object.class, Object.class));
+        assertNotNull(client.register(Object.class, Object.class));
     }
 
     @Test
     void testRegister4() {
-        assertThrows(UnsupportedOperationException.class, () -> client.register(Object.class, Collections.emptyMap()));
+        assertNotNull(client.register(Object.class, Collections.emptyMap()));
     }
 
     @Test
     void testRegister5() {
-        assertThrows(UnsupportedOperationException.class, () -> client.register(new Object()));
+        assertNotNull(client.register(new Object()));
     }
 
     @Test
     void testRegister6() {
-        assertThrows(UnsupportedOperationException.class, () -> client.register(new Object(), 0));
+        assertNotNull(client.register(new Object(), 0));
     }
 
     @Test
     void testRegister7() {
-        assertThrows(UnsupportedOperationException.class, () -> client.register(new Object(), Object.class));
+        assertNotNull(client.register(new Object(), Object.class));
     }
 
     @Test
     void testRegister8() {
-        assertThrows(UnsupportedOperationException.class, () -> client.register(new Object(), Collections.emptyMap()));
+        assertNotNull(client.register(new Object(), Collections.emptyMap()));
     }
 
     @Test

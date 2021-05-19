@@ -13,10 +13,10 @@ import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Providers;
 
 import org.minijax.commons.IOUtils;
 import org.minijax.commons.MinijaxException;
-import org.minijax.rs.MinijaxProviders;
 import org.minijax.rs.MinijaxRequestContext;
 import org.minijax.rs.multipart.Multipart;
 
@@ -90,7 +90,7 @@ public class EntityUtils {
     public static void writeEntity(
             final Object entity,
             final MediaType mediaType,
-            final MinijaxProviders providers,
+            final Providers providers,
             final OutputStream outputStream)
                     throws IOException {
 
@@ -147,7 +147,7 @@ public class EntityUtils {
      */
     public static <T> InputStream writeEntity(
             final Entity<T> entity,
-            final MinijaxProviders providers)
+            final Providers providers)
                     throws IOException {
 
         if (entity == null) {
