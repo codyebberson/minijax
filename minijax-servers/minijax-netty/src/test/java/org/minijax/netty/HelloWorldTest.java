@@ -1,8 +1,10 @@
 package org.minijax.netty;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -41,6 +43,12 @@ class HelloWorldTest {
         @Consumes(MediaType.TEXT_PLAIN)
         public static Response echo(final String content) {
             return Response.ok("You said: " + content, MediaType.TEXT_PLAIN).build();
+        }
+
+        @GET
+        @Path("/redirect")
+        public static Response redirect() {
+            return Response.temporaryRedirect(URI.create("https://www.example.com/")).build();
         }
     }
 
@@ -97,5 +105,31 @@ class HelloWorldTest {
         verify(nettyCtx).write(argument.capture());
         assertEquals(HttpResponseStatus.OK, argument.getValue().status());
         assertEquals("You said: xyz", argument.getValue().content().toString(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void testRedirect() throws Exception {
+        final Minijax minijax = new Minijax().register(HelloResource.class);
+
+        final ScheduledExecutorService executorService = mock(ScheduledExecutorService.class);
+
+        final ServerHandler server = new ServerHandler(minijax, executorService);
+
+        final ChannelFuture channelFuture = mock(ChannelFuture.class);
+
+        final ChannelHandlerContext nettyCtx = mock(ChannelHandlerContext.class);
+        when(nettyCtx.write(any())).thenReturn(channelFuture);
+
+        final FullHttpRequest request = mock(FullHttpRequest.class);
+        when(request.uri()).thenReturn("/redirect");
+        when(request.method()).thenReturn(HttpMethod.GET);
+
+        try (final MinijaxNettyRequestContext ctx = new MinijaxNettyRequestContext(minijax.getDefaultApplication(), request)) {
+            server.channelRead(nettyCtx, request);
+        }
+
+        final ArgumentCaptor<DefaultFullHttpResponse> argument = ArgumentCaptor.forClass(DefaultFullHttpResponse.class);
+        verify(nettyCtx).write(argument.capture());
+        assertEquals(HttpResponseStatus.TEMPORARY_REDIRECT, argument.getValue().status());
     }
 }

@@ -1,7 +1,6 @@
 package org.minijax.netty;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.*;
-import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.*;
 
 import java.io.ByteArrayOutputStream;
@@ -30,6 +29,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.AsciiString;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.FastThreadLocal;
@@ -90,8 +90,8 @@ class ServerHandler extends ChannelInboundHandlerAdapter {
 
             final int contentLength = outputStream.size();
             final ByteBuf buf = Unpooled.wrappedBuffer(outputStream.toByteArray());
-
-            final DefaultFullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buf, false);
+            final HttpResponseStatus status = HttpResponseStatus.valueOf(minijaxResponse.getStatus());
+            final DefaultFullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, status, buf, false);
             response.headers()
                     .set(SERVER, SERVER_NAME)
                     .set(DATE, date)
